@@ -47,7 +47,7 @@ class RegressaoLogistica():
         """
         Atividade 2: Função que retorna os resultados da função z por instancia usando a matriz mat_x
         """
-        z = np.dot(mat_x,self.arr_w.T) + self.b
+        z = np.dot(mat_x, self.arr_w) + self.b
         return z
 
     def forward_propagation(self,mat_x):
@@ -56,13 +56,15 @@ class RegressaoLogistica():
 
         mat_x: matriz de atributos por instancias tamanho (n,m)
         """
-        #print("MAT_X: "+str(mat_x))
-        #print("arr_w: "+str(self.arr_w))
-        #print("b: "+str(self.b))
+        print(mat_x.shape)
+        print("MAT_X: "+str(mat_x))
+        print("arr_w: "+str(self.arr_w))
+        print("b: "+str(self.b))
 
         #caso nao esteja definido, inicialize o atributo self.arr_w com zero
         if(self.arr_w is None):
-            self.arr_w = np.zeros(mat_x.shape[1])
+            self.arr_w = np.zeros(mat_x)
+            print("arr_w: "+str(self.arr_w))
         #defina o atributo mat_x
         self.mat_x = mat_x
 
@@ -72,8 +74,8 @@ class RegressaoLogistica():
         #calcule a função de ativação (por meio do atributo) e armazene o resultado em arr_a
         self.arr_a = self.func_ativacao(self.arr_z)
 
-        #print("ARR_Z: "+str(self.arr_z))
-        #print("ARR_A: "+str(self.arr_a))
+        print("ARR_Z: "+str(self.arr_z))
+        print("ARR_A: "+str(self.arr_a))
 
         #o arr_a será retornado nessa função
         return self.arr_a
