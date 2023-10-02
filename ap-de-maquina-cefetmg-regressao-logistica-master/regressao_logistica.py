@@ -91,50 +91,49 @@ class RegressaoLogistica():
         #print("X: "+str(self.mat_a_ant))
 
         #calcule dz por meio do atributo representando a função da derivada
-        arr_dz = None
+        arr_dz = self.dz_func(self.arr_a, self.arr_z, arr_y)
 
 
         #a partir de arr_dz e mat_x, calcula arr_dw
-        arr_dw = None
+        arr_dw = (1/n_instances) * arr_dz.dot(self.mat_x)
 
         #a partir de arr_dz, calcula db
-        db = None
+        db = (1/n_instances) * np.sum(arr_dz)
 
         #print("DZ: "+str(arr_dz))
         #print("arr_dw: "+str(arr_dw))
         #print("db: "+str(db))
 
         #define o gradiente (instancie um objeto da classe Gradiente apropriadamente)
-        self.gradiente = None
+        self.gradiente = Gradiente(arr_dz, arr_dw, db)
 
         return self.gradiente
     def loss_function(self,arr_y):
         """
         Atividade 5: Calcule a loss function usando entropia cruzada (cross entropy)
         """
-        return None
+        return (-1 / len(arr_y)) * (np.sum(arr_y * np.log(self.arr_a) + ((1 - arr_y) * np.log(1 - self.arr_a))))
 
 
     def atualiza_pesos(self,learning_rate):
         """
         Atividade 6: Atualize os pesos arr_w e b por meio do gradiente e o learning_rate (float)
         """
-        self.arr_w = None
-        self.b = None
+        self.arr_w = self.arr_w - learning_rate * self.gradiente.arr_dw
+        self.b = self.b - learning_rate * self.gradiente.db
 
     def fit(self,mat_x,arr_y,learning_rate=1.1):
         """
         Atividade 7: Cria o modelo de regressão logistica por meio de num_iteracoes épocas
         imprime, a cada 10 épocas, a loss function obtida
         """
-        for i in range(self.num_iteracoes):
-            None
-
-            #print("A: "+str(self.arr_a))
-            #print("Y:"+str(arr_y))
-            if (i%10 == 0):
-                print("Iteração: "+str(i)+" Loss: "+str(loss))
-
+          for i in range(self.num_iteracoes):
+            self.forward_propagation(mat_x)
+            loss = self.loss_function(arr_y)
+            self.backward_propagation(arr_y)
+            self.atualiza_pesos(learning_rate)
+            if (i % 10 == 0):
+                print("Iteração: " + str(i) + " Loss: " + str(loss))
 
 
         #print("PESOS: "+str(self.arr_w)+" b:"+str(self.b))
@@ -148,4 +147,4 @@ class RegressaoLogistica():
         calcula-se o forward_propagation do modelo para, logo após, retornar o vetor de predições
         """
 
-        return None
+        return self.forward_propagation(mat_x) > 0.5
