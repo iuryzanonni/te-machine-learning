@@ -63,7 +63,7 @@ class RegressaoLogistica():
 
         #caso nao esteja definido, inicialize o atributo self.arr_w com zero
         if(self.arr_w is None):
-            self.arr_w = np.zeros(mat_x)
+            self.arr_w = np.zeros(mat_x.shape[1]) #erro
             print("arr_w: "+str(self.arr_w))
         #defina o atributo mat_x
         self.mat_x = mat_x
@@ -127,13 +127,16 @@ class RegressaoLogistica():
         Atividade 7: Cria o modelo de regressão logistica por meio de num_iteracoes épocas
         imprime, a cada 10 épocas, a loss function obtida
         """
-          for i in range(self.num_iteracoes):
+        for i in range(self.num_iteracoes):
             self.forward_propagation(mat_x)
             loss = self.loss_function(arr_y)
             self.backward_propagation(arr_y)
             self.atualiza_pesos(learning_rate)
-            if (i % 10 == 0):
-                print("Iteração: " + str(i) + " Loss: " + str(loss))
+            #print("A: "+str(self.arr_a))
+            #print("Y:"+str(arr_y))
+            if (i%10 == 0):
+                print("Iteração: "+str(i)+" Loss: "+str(loss))
+
 
 
         #print("PESOS: "+str(self.arr_w)+" b:"+str(self.b))
@@ -147,4 +150,4 @@ class RegressaoLogistica():
         calcula-se o forward_propagation do modelo para, logo após, retornar o vetor de predições
         """
 
-        return self.forward_propagation(mat_x) > 0.5
+        return self.forward_propagation(mat_x) >= 0.5
