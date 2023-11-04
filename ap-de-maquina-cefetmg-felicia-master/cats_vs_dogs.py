@@ -115,26 +115,26 @@ def fully_connected_model():
 
 def simple_cnn_model(add_dropout=False):
     #entrada
-    entrada = None
+    entrada = Input(shape=(150,150,3),name="Entrada")
 
     #demais camadas
-
-
-
-
-
-
-
-
-
+    conv_2d_a = layers.Conv2D(32,(3,3),activation="relu",name="Convolucao1")(entrada)
+    max_polling_a = layers.MaxPool2D((2,2))(conv_2d_a)
+    conv_2d_b = layers.Conv2D(32,(3,3),activation="relu",name="Convolucao2")(entrada)
+    max_polling_b = layers.MaxPool2D((2,2))(conv_2d_b)
+    conv_2d_c = layers.Conv2D(32,(3,3),activation="relu",name="Convolucao3")(entrada)
+    max_polling_c = layers.MaxPool2D((2,2))(conv_2d_c)
+    conv_2d_d = layers.Conv2D(32,(3,3),activation="relu",name="Convolucao4")(entrada)
+    max_polling_d = layers.MaxPool2D((2,2))(conv_2d_d)
+    
     achatar = layers.Flatten()(max_polling_d)
     if(add_dropout):
-        achatar = None
-    fc_a = None
+        achatar = layers.Dropout(.5)(achatar)
+    fc_a = layers.Dense(512,activation="relu",name="CamadaFC")(achatar)
     #camada de saida com 3 neuronios - cada um, respresntando uma classe
     #lembre de passar a cmada correta como saida
     #lembre-se que é uma classificação binária
-    saida = None
+    saida =  layers.Dense(1,activation="sigmoid", name="saida")(fc_a)
 
     #cria-se o modelo
     modelo = Model(inputs=entrada, outputs=saida)
