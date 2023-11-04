@@ -85,10 +85,10 @@ def get_dataset(param_training,arr_str_data_dir):
     for i,obj_datagen in enumerate(arr_obj_datagen):
         print(f"Dataset: {arr_str_data_dir[i]}")
         it_datagen = obj_datagen.flow_from_directory(
-                                                       None,
-                                                        target_size=None,#as imagens sempre serão 150x150
-                                                        batch_size=param_training.int_batch_size,#batch size definido pelo paramero
-                                                        class_mode=None,
+                                                       arr_str_data_dir[i],
+                                                        target_size=(150,150),#as imagens sempre serão 150x150
+                                                        batch_size=param_training,#batch size definido pelo paramero
+                                                        class_mode='binary',
                                                         seed=Constantes.SEED
                                                         )
         arr_ite_datagen.append(it_datagen)
@@ -99,17 +99,17 @@ def fully_connected_model():
     entrada = Input(shape=(150,150,3),name="Entrada")
 
     #camadas a serem usadas
-    achatar = None
-    camada_um = None
-    camada_dois = None
-    camada_tres = None
+    achatar = layers.Flatten()(entrada)
+    camada_um = layers.Dense(500,activation="relu",name="Camada1")(achatar)
+    camada_dois = layers.Dense(200,activation="relu",name="Camada2")(camada_um)
+    camada_tres = layers.Dense(100,activation="relu",name="Camada2")(camada_dois)
 
     #camada de saida
     #lembre-se que é uma classificação binária
-    saida = None
+    saida = layers.Dense(1,activation="sigmoid", name="saida")(camada_dois)
 
     #cria-se o modelo
-    modelo = None
+    modelo = Model(inputs=entrada, outputs=saida)
     return modelo
 
 
