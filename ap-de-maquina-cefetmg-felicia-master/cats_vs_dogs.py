@@ -158,11 +158,11 @@ def run_model(model,it_gen_train,it_gen_validation,param_training,
     if not load_if_exists or not os.path.isfile(str_file_to_save) :
         #ao compilar use o optimizador em param_training.optimizer a perda é uma entropia cruzada binária
         #a métrica será sempre acurácia
-        model.compile(optimizer=None,loss=None,metrics=[None])
-        #use o param_training para os parametros steps_per_epoch e epochs
-        history = model.fit_generator(None,
-                                            steps_per_epoch=None,
-                                            epochs=None,
+        model.compile(optimizer=param_training.optimizer,loss='binary_crossentropy',metrics='accuracy')
+        #use o param_training para os parametros int_num_steps_per_epoch e int_num_epochs
+        history = model.fit_generator(it_gen_train,
+                                            steps_per_epoch=param_training.int_num_steps_per_epoch,
+                                            epochs=param_training.int_num_epochs
                                             #podemos colocar a validação e ver a validação por passos. Não recomento, pois, isso demoraria muio
                                             #..isso é bom apenas para analisarmos a curva de erro na validação e do treino. Mas, prefiro primeiramente
                                             #..analisar o resultado da validação apenas no final do treino - usando predict_generator - e, se necessário,
@@ -171,11 +171,11 @@ def run_model(model,it_gen_train,it_gen_validation,param_training,
                                             #validation_steps=int_val_steps
                                          )
         #salve o modelo
-        None
+        model.save(str_file_to_save)
     else:
         #carrega o modelo
-        model = None
+        model = load_model(str_file_to_save)
     print("Avaliando validação....")
-    loss, acc = model.evaluate_generator(None,
-                                            steps=None)
+    loss, acc = model.evaluate_generator(it_gen_validation,
+                                            steps=int_val_steps)
     return acc
