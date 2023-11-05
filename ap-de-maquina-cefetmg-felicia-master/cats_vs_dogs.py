@@ -87,7 +87,7 @@ def get_dataset(param_training,arr_str_data_dir):
         it_datagen = obj_datagen.flow_from_directory(
                                                        arr_str_data_dir[i],
                                                         target_size=(150,150),#as imagens sempre serão 150x150
-                                                        batch_size=param_training,#batch size definido pelo paramero
+                                                        batch_size=param_training.int_batch_size,#batch size definido pelo paramero
                                                         class_mode='binary',
                                                         seed=Constantes.SEED
                                                         )
@@ -102,11 +102,11 @@ def fully_connected_model():
     achatar = layers.Flatten()(entrada)
     camada_um = layers.Dense(500,activation="relu",name="Camada1")(achatar)
     camada_dois = layers.Dense(200,activation="relu",name="Camada2")(camada_um)
-    camada_tres = layers.Dense(100,activation="relu",name="Camada2")(camada_dois)
+    camada_tres = layers.Dense(100,activation="relu",name="Camada3")(camada_dois)
 
     #camada de saida
     #lembre-se que é uma classificação binária
-    saida = layers.Dense(1,activation="sigmoid", name="saida")(camada_dois)
+    saida = layers.Dense(1,activation="sigmoid", name="saida")(camada_tres)
 
     #cria-se o modelo
     modelo = Model(inputs=entrada, outputs=saida)
@@ -117,19 +117,19 @@ def simple_cnn_model(add_dropout=False):
     #entrada
     entrada = Input(shape=(150,150,3),name="Entrada")
 
-    #demais camadas
-    conv_2d_a = layers.Conv2D(32,(3,3),activation="relu",name="Convolucao1")(entrada)
-    max_polling_a = layers.MaxPool2D((2,2))(conv_2d_a)
-    conv_2d_b = layers.Conv2D(32,(3,3),activation="relu",name="Convolucao2")(entrada)
-    max_polling_b = layers.MaxPool2D((2,2))(conv_2d_b)
-    conv_2d_c = layers.Conv2D(32,(3,3),activation="relu",name="Convolucao3")(entrada)
-    max_polling_c = layers.MaxPool2D((2,2))(conv_2d_c)
-    conv_2d_d = layers.Conv2D(32,(3,3),activation="relu",name="Convolucao4")(entrada)
-    max_polling_d = layers.MaxPool2D((2,2))(conv_2d_d)
+    # demais camadas
+    conv_2d_a = layers.Conv2D(32,(3, 3), activation='relu', name="Convolucao1")(entrada)
+    max_polling_a = layers.MaxPooling2D((2, 2), name="Max_Pooling1")(conv_2d_a)
+    conv_2d_b = layers.Conv2D(64,(3, 3), activation='relu', name="Convolucao2")(max_polling_a)
+    max_polling_b = layers.MaxPooling2D((2, 2), name="Max_Pooling2")(conv_2d_b)
+    conv_2d_c = layers.Conv2D(128,(3, 3), activation='relu', name="Convolucao3")(max_polling_b)
+    max_polling_c = layers.MaxPooling2D((2, 2), name="Max_Pooling3")(conv_2d_c)
+    conv_2d_d = layers.Conv2D(128,(3, 3), activation='relu', name="Convolucao4")(max_polling_c)
+    max_polling_d = layers.MaxPooling2D((2, 2), name="Max_Pooling4")(conv_2d_d)
     
     achatar = layers.Flatten()(max_polling_d)
     if(add_dropout):
-        achatar = layers.Dropout(.5)(achatar)
+        achatar = layers.Dropout(0.5)(achatar)
     fc_a = layers.Dense(512,activation="relu",name="CamadaFC")(achatar)
     #camada de saida com 3 neuronios - cada um, respresntando uma classe
     #lembre de passar a cmada correta como saida
