@@ -46,7 +46,7 @@ class OtimizacaoObjetivoRandomForest(OtimizacaoObjetivo):
         num_arvores = trial.suggest_int('num_arvores', 30, 50, step=5)
 
         rf_method = RandomForestClassifier(min_samples_split=min_samples,n_estimators=num_arvores,
-                                            max_features=max_features,random_state=2,n_jobs=6,
+                                            max_features=max_features,random_state=2,n_jobs=1,
                                             max_samples = 0.8
                                             )
 
@@ -73,7 +73,7 @@ class OtimizacaoObjetivoKNN(OtimizacaoObjetivo):
 
         n_neighbors = trial.suggest_int('n_neighbors', 2, 6)
 
-        knn_method = KNeighborsClassifier(n_neighbors=2**n_neighbors,n_jobs=6)
+        knn_method = KNeighborsClassifier(n_neighbors=2**n_neighbors,n_jobs=1)
 
         #caso seja embedding, setar of parametros da janela
         if isinstance(self.preproc_method, InstanceWisePreprocess) and\
